@@ -17,11 +17,14 @@ print(f'Connected to ElasticSearch cluster {es.info().body["cluster_name"]}')
 #         }
 #         es.index(index="cars", document=document)
 
+es.options(ignore_status=[400,404]).indices.delete(index='items')
+
 with open('data/data.json', 'r') as data_file:
     json_file = json.load(data_file)
 
     for item in json_file:
         es.index(index="items", document=item)
+        print(item['title'])
 
 # {
 #     "location": "online", 

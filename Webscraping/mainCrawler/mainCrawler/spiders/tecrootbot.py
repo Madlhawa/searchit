@@ -1,5 +1,6 @@
 import re
 import scrapy
+import textwrap
 import unicodedata
 from money_parser import price_str
 
@@ -11,7 +12,7 @@ class TecrootbotSpider(scrapy.Spider):
     def parse(self, response):
         number_of_pages = response.xpath('//a[@class="page-numbers"]/text()').extract()[-1]
         print(number_of_pages)
-        for page_number in range(1,int(10)):
+        for page_number in range(1,int(number_of_pages)):
             page_url = f'https://tecroot.lk/shop/page/{page_number}/?stock=instock'
             yield scrapy.Request(url=page_url, callback=self.parse_page)
     
@@ -27,7 +28,7 @@ class TecrootbotSpider(scrapy.Spider):
         title = response.xpath('//h1[@class="product_title entry-title"]/text()').extract_first()
         availability = response.xpath('//span[@class="electro-stock-availability"]//text()').extract_first()
         description_raw = response.xpath('//div[@class="woocommerce-product-details__short-description"]//text()').extract()
-        description = re.sub( '\s+', ' ', unicodedata.normalize("NFKD",''.join(description_raw))).strip()
+        description = textwrap.shorten(re.sub( '\s+', ' ', unicodedata.normalize("NFKD",''.join(description_raw))).strip(), width=100)
         price = price_str(response.xpath('//p[@class="price"]//text()').extract()[-1])
         category = response.xpath('//nav[@class="woocommerce-breadcrumb"]//text()').extract()
         store = 'tecroot'
