@@ -28,7 +28,7 @@ class TecrootbotSpider(scrapy.Spider):
         title = response.xpath('//h1[@class="product_title entry-title"]/text()').extract_first()
         availability = response.xpath('//span[@class="electro-stock-availability"]//text()').extract_first()
         description_raw = response.xpath('//div[@class="woocommerce-product-details__short-description"]//text()').extract()
-        description = textwrap.shorten(re.sub( '\s+', ' ', unicodedata.normalize("NFKD",''.join(description_raw))).strip(), width=100)
+        description = re.sub( '\s+', ' ', unicodedata.normalize("NFKD",''.join(description_raw))).strip()[:90]+'...'
         price = price_str(response.xpath('//p[@class="price"]//text()').extract()[-1])
         category = response.xpath('//nav[@class="woocommerce-breadcrumb"]//text()').extract()
         store = 'tecroot'
