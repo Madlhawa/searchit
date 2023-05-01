@@ -30,7 +30,7 @@ class TecrootbotSpider(scrapy.Spider):
         description_raw = response.xpath('//div[@class="woocommerce-product-details__short-description"]//text()').extract()
         description = re.sub( '\s+', ' ', unicodedata.normalize("NFKD",''.join(description_raw))).strip()[:90]+'...'
         price = price_str(response.xpath('//p[@class="price"]//text()').extract()[-1])
-        category = response.xpath('//nav[@class="woocommerce-breadcrumb"]//text()').extract()
+        category = response.xpath('//nav[@class="woocommerce-breadcrumb"]//text()').extract()[:-1]
         store = 'tecroot'
         image_url = response.xpath('//div[@class="product-images-wrapper"]//img/@src').extract_first()
         item_url = response.url
